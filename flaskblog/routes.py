@@ -2,7 +2,7 @@
 from flask import render_template , url_for, flash, redirect, request
 from flaskblog.forms import RegistrationForm , LoginForm
 from flaskblog import app, db, bcrypt
-from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import login_user,logout_user, current_user, logout_user, login_required
 from flaskblog.models import User, Post
 
 posts =[ 
@@ -21,7 +21,7 @@ posts =[
     },
     {
     'author':'Subham Sarkar',
-    'title':' the alchemist',
+    'title':' the helloo',
     'content':'your lie in April',
     'date_processed':'10th of the April'
     
@@ -40,6 +40,8 @@ def about():
 
 @app.route("/register" ,methods = ['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -55,6 +57,7 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
@@ -68,7 +71,7 @@ def login():
             flash('please check username and password', 'danger')
     return render_template('login.html', title= 'Login', form = form)
 
-@app.route("/logout")
+@app.route("/logout")  
 def logout():
     logout_user()
     return redirect(url_for('home'))
